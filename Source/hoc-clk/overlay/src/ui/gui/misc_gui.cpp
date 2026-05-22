@@ -1058,7 +1058,7 @@ protected:
             {1250000, "Unsafe Max"},
         };
 
-        ValueThresholds vdd2Thresholds(IsMariko() ? 1212500 : 1237500, 1250000);
+        ValueThresholds vdd2Thresholds(IsMariko() ? 1212500 : 1237500, IsMariko() ? 1250000 : 1275000);
         addConfigButton(
             KipConfigValue_commonEmcMemVolt,
             "RAM VDD2 Voltage",
@@ -1072,12 +1072,13 @@ protected:
         );
 
         if(IsMariko()) {
+            ValueThresholds vddqThresholds(675000, 725000);
             addConfigButton(
                 KipConfigValue_marikoEmcVddqVolt,
                 "RAM VDDQ Voltage",
-                ValueRange(400000, 700000, 5000, "mV", 1000),
+                ValueRange(400000, 750000, 5000, "mV", 1000),
                 "RAM VDDQ Voltage",
-                &thresholdsDisabled,
+                &vddqThresholds,
                 {},
                 {},
                 false,
@@ -1323,19 +1324,19 @@ protected:
         }
 
         ValueThresholds thresholdsDisabled(0, 0);
+        this->listElement->addItem(new tsl::elm::CategoryHeader("Advanced"));
         if(IsMariko()) {
-            this->listElement->addItem(new tsl::elm::CategoryHeader("Advanced"));
             addConfigButton(KipConfigValue_timingEmcTbreak, "RAM-Timing tBreak", ValueRange(0, 1, 1, "", 1), "tBreak", &thresholdsDisabled, {}, timingTbreakFreqs, false, true);
             addConfigTrackbar(KipConfigValue_low_t6_tRTW, "Low t6 tRTW",      ValueRange(0,  9, 1));
             addConfigTrackbar(KipConfigValue_low_t7_tWTR, "Low t7 tWTR",      ValueRange(0,  9, 1));
             addConfigTrackbar(KipConfigValue_t2_tRP_cap,  "1333WL t2 RP Cap", ValueRange(0,  8, 1));
-            addMappedConfigTrackbar(KipConfigValue_t6_tRTW_fine_tune, "t6 tRTW Fine Tune",
-                {0xFFFFFFFEu, 0xFFFFFFFFu, 0u, 1u, 2u},
-                {"-2", "-1", " 0", "+1", "+2"});
-            addMappedConfigTrackbar(KipConfigValue_t7_tWTR_fine_tune, "t7 tWTR Fine Tune",
-                {0xFFFFFFFDu, 0xFFFFFFFEu, 0xFFFFFFFFu, 0u, 1u, 2u, 3u},
-                {"-3", "-2", "-1", " 0", "+1", "+2", "+3"});
         }
+        addMappedConfigTrackbar(KipConfigValue_t6_tRTW_fine_tune, "t6 tRTW Fine Tune",
+            {0xFFFFFFFEu, 0xFFFFFFFFu, 0u, 1u, 2u},
+            {"-2", "-1", " 0", "+1", "+2"});
+        addMappedConfigTrackbar(KipConfigValue_t7_tWTR_fine_tune, "t7 tWTR Fine Tune",
+            {0xFFFFFFFDu, 0xFFFFFFFEu, 0xFFFFFFFFu, 0u, 1u, 2u, 3u},
+            {"-3", "-2", "-1", " 0", "+1", "+2", "+3"});
     }
 };
 
