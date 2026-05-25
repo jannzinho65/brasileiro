@@ -563,6 +563,7 @@ namespace ams::ldr::hoc::pcv::erista {
     // }
 
     Result MemMtcTableAsm(u32 *ptr) {
+        /* This is a mess but the compiler made this painful to patch so we must do it this way */
         constexpr s32 GoodAdrpOffset = -1;
         constexpr s32 GoodMovOffset  = -7;
         constexpr s32 GoodBlOffset       = 1;
@@ -580,25 +581,27 @@ namespace ams::ldr::hoc::pcv::erista {
         R_UNLESS(ptr + GoodMovOffset >= nsoStart, ldr::ResultInvalidMtcTablePattern());
 
         /* Check for GetHardwareType asm and skip if it is found */
+        /* The pattern will match on the first time, but the location is bad, so it must be skipped */
         if(AsmCompareAdrpNoImm(*(ptr + MtcBadAdrpOffset), MtcBadAdrpAsm) && AsmBlCompareOpcodeOnly(*(ptr + MtcBadBlOffset0), MtcBadBlOpcode0) && AsmBlCompareOpcodeOnly(*(ptr + MtcBadBlOffset1), MtcBadBlOpcode1)) {
             R_SKIP();
         }
-        
-        u32 adrp = *(ptr + GoodAdrpOffset);
-        R_UNLESS(AsmCompareAdrpNoImm(adrp, MtcAdrpAsm), ldr::ResultInvalidMtcTablePattern()); // Should always pass
-        
+
         /* We don't check for matching register because both registers must be x0 in order to pass the previous checks. */
         /* The correct instructions will always be x0 since the mtcTable pointer is returned. */
+        u32 adrp = *(ptr + GoodAdrpOffset);
+        R_UNLESS(AsmCompareAdrpNoImm(adrp, MtcAdrpAsm), ldr::ResultInvalidMtcTablePattern());
+        
 
-        /* Pray this does not break. */
+        /* Check for the branch instruction above the cbz to ensure we are patching the right location*/
         u32 bl = *(ptr + GoodBlOffset);
-        R_UNLESS(AsmBlCompareOpcodeOnly(bl, MtcGoodBlOpcode), ldr::ResultInvalidMtcTablePattern()); // Should always pass
+        R_UNLESS(AsmBlCompareOpcodeOnly(bl, MtcGoodBlOpcode), ldr::ResultInvalidMtcTablePattern());
 
 
-        /* Pray this does not break either. */
+        /* Check for the mov that actually sets the mtc table count. */
         u32 mov = *(ptr + GoodMovOffset);
         R_UNLESS(asm_compare_no_rd(mov, MtcMovAsm), ldr::ResultInvalidMtcTablePattern());
 
+        /* Patch out the count of the mov to our custom mtc table amount*/
         u32 movCountPatch = asm_set_rd(asm_set_imm16(MtcMovAsm, newEmcList.size()), asm_get_rd(mov));
 
         PATCH_OFFSET(ptr + GoodMovOffset, movCountPatch);
