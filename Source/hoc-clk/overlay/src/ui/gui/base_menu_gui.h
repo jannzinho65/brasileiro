@@ -84,6 +84,7 @@ class BaseMenuGui : public BaseGui
         tsl::elm::Element* baseUI() override;
         void refresh() override;
         virtual void listUI() = 0;
+        u16 headerHeight() const override { return HOC_BOX_BOTTOM + 9; }
 
     private:
         char displayStrings[48][32];  // Pre-formatted display strings

@@ -29,6 +29,8 @@
 #include "fatal_gui.h"
 #include "../format.h"
 
+#define TOP_Y_OFFSET 15
+
 // Cache hardware model to avoid repeated syscalls
 
 BaseMenuGui::BaseMenuGui() : tempColors{ tsl::Color(0), tsl::Color(0), tsl::Color(0), tsl::Color(0), tsl::Color(0), tsl::Color(0), tsl::Color(0), }
@@ -77,10 +79,10 @@ void BaseMenuGui::preDraw(tsl::gfx::Renderer* renderer) {
 
     static u32 maxProfileValueWidth = renderer->getTextDimensions("USB Charger", false, SMALL_TEXT_SIZE).first; // longest word
 
-    u32 y = 91;
+    u32 y = 91 + TOP_Y_OFFSET;
 
     // === TOP SECTION ===
-    renderer->drawRoundedRect(14, 70-1, 420, 30+2, 12.0f, renderer->aWithOpacity(tsl::tableBGColor));
+    renderer->drawRoundedRect(14, 70-1 + TOP_Y_OFFSET, 420, 30+2, 12.0f, renderer->aWithOpacity(tsl::tableBGColor));
 
     // App ID - use pre-formatted string
     renderer->drawString(labels[0], false, positions[0], y, SMALL_TEXT_SIZE, tsl::sectionTextColor);
@@ -93,7 +95,7 @@ void BaseMenuGui::preDraw(tsl::gfx::Renderer* renderer) {
     y += 38; // Direct assignment instead of += 38
 
     // === MAIN DATA SECTION ===
-    renderer->drawRoundedRect(14, 106, 420, 156, 10.0f, renderer->aWithOpacity(tsl::tableBGColor));
+    renderer->drawRoundedRect(14, 106 + TOP_Y_OFFSET, 420, 156, 10.0f, renderer->aWithOpacity(tsl::tableBGColor));
 
     // === FREQUENCY SECTION ===
     // Labels first (better cache locality)
@@ -348,7 +350,6 @@ void BaseMenuGui::refresh()
 tsl::elm::Element* BaseMenuGui::baseUI()
 {
     auto* list = new tsl::elm::List();
-    list->addItem(new tsl::elm::CustomDrawer([](tsl::gfx::Renderer*, s32, s32, s32, s32) {}), 35); // add a bit of space
     this->listElement = list;
     this->listUI();
 

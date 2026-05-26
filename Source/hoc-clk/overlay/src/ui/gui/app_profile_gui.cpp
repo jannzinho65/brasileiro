@@ -25,6 +25,7 @@
  */
 
 
+#include "ult_ext.h"
 #include "app_profile_gui.h"
 
 #include "../format.h"

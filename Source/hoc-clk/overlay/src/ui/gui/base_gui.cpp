@@ -25,8 +25,12 @@
  */
 
 #include "base_gui.h"
-
 #include "../elements/base_frame.h"
+
+void BaseFrame::draw(tsl::gfx::Renderer* renderer) {
+    tsl::elm::HeaderOverlayFrame::draw(renderer);
+    this->gui->preDraw(renderer);
+}
 
 #include <tesla.hpp>
 #include <math.h>
@@ -142,11 +146,27 @@ void BaseGui::preDraw(tsl::gfx::Renderer* renderer) {
         STATIC_TEAL,
         false
     );
+
+    static const std::string versionStr = "Version " + getVersionString();
+    static constexpr tsl::Color versionColor(9, 9, 9, 15);
+    static constexpr s32 vx = LOGO_TEXT_X + 15;
+    static constexpr s32 vy = TEXT_Y + 18;
+    static constexpr s32 fs = 15;
+    static constexpr s32 skew = 3;
+    static constexpr s32 passes = 10;
+    for (s32 i = 0; i < passes; i++) {
+        s32 sliceY = (vy - fs) + i * fs / passes;
+        s32 sliceH = fs / passes + 1;
+        s32 xOff = skew - (skew * i / (passes - 1));
+        renderer->enableScissoring(0, sliceY, tsl::cfg::FramebufferWidth, sliceH);
+        renderer->drawString(versionStr.c_str(), false, vx + xOff, vy, fs, versionColor);
+        renderer->disableScissoring();
+    }
 }
 
 tsl::elm::Element* BaseGui::createUI()
 {
-    BaseFrame* rootFrame = new BaseFrame(this);
+    BaseFrame* rootFrame = new BaseFrame(this, this->headerHeight());
     rootFrame->setContent(this->baseUI());
     return rootFrame;
 }

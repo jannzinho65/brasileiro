@@ -32,6 +32,14 @@
 #include "global_override_gui.h"
 #include "misc_gui.h"
 #include "about_gui.h"
+#include "ult_ext.h"
+
+tsl::elm::Element* MainGui::baseUI() {
+    auto* list = new BoxClippedList();
+    this->listElement = list;
+    this->listUI();
+    return list;
+}
 
 void MainGui::listUI()
 {

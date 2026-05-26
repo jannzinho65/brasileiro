@@ -25,6 +25,7 @@
  */
 
 
+#include "ult_ext.h"
 #include "freq_choice_gui.h"
 
 #include "../format.h"

@@ -17,6 +17,7 @@
  */
 
 #include "misc_gui.h"
+#include "ult_ext.h"
 #include "fatal_gui.h"
 #include "config_info_strings.h"
 #include "../format.h"
@@ -547,7 +548,7 @@ void MiscGui::listUI()
     ValueThresholds thresholdsDisabled(0, 0);
     std::vector<NamedValue> noNamedValues = {};
 
-    this->listElement->addItem(new tsl::elm::CategoryHeader("Settings"));
+    this->listElement->addItem(new CompactCategoryHeader("Settings"));
 
     tsl::elm::CustomDrawer* rebootSetWarning = new tsl::elm::CustomDrawer([](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
         renderer->drawString("\uE150 Settings marked in blue", false, x + 20, y + 30, 18, tsl::style::color::ColorText);
@@ -659,7 +660,7 @@ protected:
     void listUI() override {
         Result rc = hocclkIpcGetConfigValues(this->configList);
         if (R_FAILED(rc)) [[unlikely]] { FatalGui::openWithResultCode("hocclkIpcGetConfigValues", rc); return; }
-        this->listElement->addItem(new tsl::elm::CategoryHeader("General Settings"));
+        this->listElement->addItem(new CompactCategoryHeader("General Settings"));
 
         ValueThresholds thresholdsDisabled(0, 0);
         std::vector<NamedValue> ramVoltDispModes = {
@@ -719,7 +720,7 @@ protected:
     void listUI() override {
         Result rc = hocclkIpcGetConfigValues(this->configList);
         if (R_FAILED(rc)) [[unlikely]] { FatalGui::openWithResultCode("hocclkIpcGetConfigValues", rc); return; }
-        this->listElement->addItem(new tsl::elm::CategoryHeader("Experimental Settings"));
+        this->listElement->addItem(new CompactCategoryHeader("Experimental Settings"));
         ValueThresholds thresholdsDisabled(0, 0);
         if(IsMariko()) {
             addConfigToggle(HocClkConfigValue_MarikoMiddleFreqs, nullptr, true);
@@ -855,7 +856,7 @@ protected:
     void listUI() override {
         Result rc = hocclkIpcGetConfigValues(this->configList);
         if (R_FAILED(rc)) [[unlikely]] { FatalGui::openWithResultCode("hocclkIpcGetConfigValues", rc); return; }
-        this->listElement->addItem(new tsl::elm::CategoryHeader("Governor Settings"));
+        this->listElement->addItem(new CompactCategoryHeader("Governor Settings"));
         ValueThresholds thresholdsDisabled(0, 0);
 
         std::vector<NamedValue> GovernorMinHz = {
@@ -896,7 +897,7 @@ protected:
         if(!this->context)
             return;
 
-        this->listElement->addItem(new tsl::elm::CategoryHeader("Display Settings"));
+        this->listElement->addItem(new CompactCategoryHeader("Display Settings"));
         addConfigToggle(HocClkConfigValue_OverwriteRefreshRate, nullptr);
         if(!this->context->isUsingRetroSuper) {
             tsl::elm::CustomDrawer* warningText = new tsl::elm::CustomDrawer([](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
@@ -951,7 +952,7 @@ protected:
     void listUI() override {
         Result rc = hocclkIpcGetConfigValues(this->configList);
         if (R_FAILED(rc)) [[unlikely]] { FatalGui::openWithResultCode("hocclkIpcGetConfigValues", rc); return; }
-        this->listElement->addItem(new tsl::elm::CategoryHeader("Safety Settings"));
+        this->listElement->addItem(new CompactCategoryHeader("Safety Settings"));
         addConfigToggle(HocClkConfigValue_UncappedClocks, nullptr);
         addConfigToggle(HocClkConfigValue_ThermalThrottle, nullptr);
         addConfigToggle(HocClkConfigValue_HandheldTDP, nullptr);
@@ -1011,7 +1012,7 @@ protected:
 
 
 
-        this->listElement->addItem(new tsl::elm::CategoryHeader("RAM Settings"));
+        this->listElement->addItem(new CompactCategoryHeader("RAM Settings"));
 
         addMappedConfigTrackbar(KipConfigValue_emcDvbShift, "DVB Shift",
             {0xFFFFFFFCu, 0xFFFFFFFDu, 0xFFFFFFFEu, 0xFFFFFFFFu, 0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u},
@@ -1251,7 +1252,7 @@ protected:
     void listUI() override {
         Result rc = hocclkIpcGetConfigValues(this->configList);
         if (R_FAILED(rc)) [[unlikely]] { FatalGui::openWithResultCode("hocclkIpcGetConfigValues", rc); return; }
-        this->listElement->addItem(new tsl::elm::CategoryHeader("Memory Timings"));
+        this->listElement->addItem(new CompactCategoryHeader("Memory Timings"));
 
         addConfigTrackbar(KipConfigValue_t1_tRCD,  "t1 tRCD",  ValueRange(0, 7,  1));
         addConfigTrackbar(KipConfigValue_t2_tRP,   "t2 tRP",   ValueRange(0, 7,  1));
@@ -1332,7 +1333,7 @@ protected:
         }
 
         ValueThresholds thresholdsDisabled(0, 0);
-        this->listElement->addItem(new tsl::elm::CategoryHeader("Advanced"));
+        this->listElement->addItem(new CompactCategoryHeader("Advanced"));
         if(IsMariko()) {
             // tBreak / low-high timing graph (live, reads config each frame)
             {
@@ -1482,6 +1483,13 @@ protected:
 class RamLatenciesSubmenuGui : public MiscGui {
 public:
     RamLatenciesSubmenuGui() { }
+
+    tsl::elm::Element* baseUI() override {
+        auto* list = new TopAnchoredList();
+        this->listElement = list;
+        this->listUI();
+        return list;
+    }
 
 protected:
 
@@ -1729,6 +1737,8 @@ protected:
             this->configNamedValues[thisKey] = buildNamedValues(tierIdx);
         };
 
+        this->listElement->addItem(new CompactCategoryHeader("Latency Graph"));
+
         {
             HocClkConfigValueList* cfgPtr = this->configList;
             bool mariko = IsMariko();
@@ -1764,7 +1774,7 @@ protected:
                     const s32 gx    = x + 52;
                     const s32 gw    = w - 64;
                     const s32 gy    = y + 14;
-                    const s32 gh    = 72;
+                    const s32 gh    = 54;
                     const s32 th    = gh / 3;
                     const s32 axisY = gy + gh;
 
@@ -1916,7 +1926,7 @@ protected:
                         }
                     }
 
-                    s32 ly = y + h - 14;
+                    const s32 ly = axisY + 46;
                     renderer->drawRect(gx,       ly, 14, 3, cRead);
                     renderer->drawString("Read",  false, gx + 17,  ly + 5, 12, cRead);
                     renderer->drawRect(gx + 60,  ly, 14, 3, cWrite);
@@ -1925,15 +1935,15 @@ protected:
                     renderer->drawString("Same",  false, gx + 142, ly + 5, 12, cMerge);
                 }
             );
-            graph->setBoundaries(0, 0, tsl::cfg::FramebufferWidth, 165);
+            graph->setBoundaries(0, 0, tsl::cfg::FramebufferWidth, 150);
             this->listElement->addItem(graph);
         }
 
-        this->listElement->addItem(new tsl::elm::CategoryHeader("Read Latency"));
+        this->listElement->addItem(new CompactCategoryHeader("Read Latency"));
         for (int i = 0; i < 4; i++)
             addLatencyRow(kTierLabels[i], i, kLatencyRKeys);
 
-        this->listElement->addItem(new tsl::elm::CategoryHeader("Write Latency"));
+        this->listElement->addItem(new CompactCategoryHeader("Write Latency"));
         for (int i = 0; i < 4; i++)
             addLatencyRow(kTierLabels[i], i, kLatencyWKeys);
     }
@@ -1957,7 +1967,7 @@ protected:
         ValueThresholds eCpuClockThresholds(1785000, 2091000);
         ValueThresholds eCpuClockThresholdsUV(2091000, 2193000);
 
-        this->listElement->addItem(new tsl::elm::CategoryHeader("CPU Settings"));
+        this->listElement->addItem(new CompactCategoryHeader("CPU Settings"));
         if(IsMariko()) {
             addConfigTrackbar(KipConfigValue_marikoCpuUVLow, "CPU Low UV", ValueRange(0, 8, 1));
             addConfigTrackbar(KipConfigValue_marikoCpuUVHigh, "CPU High UV", ValueRange(0, 12, 1));
@@ -2152,7 +2162,7 @@ protected:
         ValueThresholds thresholdsDisabled(0, 0);
         std::vector<NamedValue> noNamedValues = {};
 
-        this->listElement->addItem(new tsl::elm::CategoryHeader("GPU Settings"));
+        this->listElement->addItem(new CompactCategoryHeader("GPU Settings"));
 
         std::vector<NamedValue> gpuUvConf = {
             NamedValue("HiOPT", 0),
@@ -2363,7 +2373,7 @@ protected:
             return;
         }
 
-        this->listElement->addItem(new tsl::elm::CategoryHeader("GPU Custom Table (mV)"));
+        this->listElement->addItem(new CompactCategoryHeader("GPU Custom Table (mV)"));
 
         ValueThresholds MgpuVmaxThresholds(800, 850);
         ValueThresholds EgpuVmaxThresholds(950, 975);
