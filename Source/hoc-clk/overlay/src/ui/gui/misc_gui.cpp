@@ -955,34 +955,8 @@ protected:
         this->listElement->addItem(new CompactCategoryHeader("Safety Settings"));
         addConfigToggle(HocClkConfigValue_UncappedClocks, nullptr);
         addConfigToggle(HocClkConfigValue_ThermalThrottle, nullptr);
-        addConfigToggle(HocClkConfigValue_HandheldTDP, nullptr);
 
         #if IS_MINIMAL == 0
-            std::map<uint32_t, std::string> labels_pwr_l = {
-                {6400, "Official Rating"}
-            };
-
-            if(IsHoag()) {
-                ValueThresholds tdpThresholdsLite(6400, 7500);
-                addConfigButton(
-                    HocClkConfigValue_LiteTDPLimit,
-                    "TDP Threshold",
-                    ValueRange(4000, 8000, 100, "mW", 1),
-                    "Power",
-                    &tdpThresholdsLite,
-                    labels_pwr_l
-                );
-            } else {
-                ValueThresholds tdpThresholds(9600, 11000);
-                addConfigButton(
-                    HocClkConfigValue_HandheldTDPLimit,
-                    "TDP Threshold",
-                    ValueRange(8000, 12000, 100, "mW", 1),
-                    "Power",
-                    &tdpThresholds
-                );
-            }
-
             ValueThresholds throttleThresholds(70, 80);
             addConfigButton(
                 HocClkConfigValue_ThermalThrottleThreshold,

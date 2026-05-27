@@ -170,19 +170,6 @@ std::vector<std::string> ConfigInfoStrings(HocClkConfigValue val, bool isMariko,
                 "Default: ON",
             };
 
-        case HocClkConfigValue_HandheldTDP:
-            return {
-                "If enabled, Resets to stock clocks when power consumption is above the threshold in handheld mode",
-                "Default: ON",
-            };
-
-        case HocClkConfigValue_HandheldTDPLimit:
-        case HocClkConfigValue_LiteTDPLimit:
-            return {
-                "The power consumption threshold (in mW) for resetting to stock clocks in handheld mode when Handheld TDP is enabled.",
-                isHoag ? "Default: 6400mW" : "Default: 9600mW"
-            };
-
         case HocClkConfigValue_ThermalThrottleThreshold:
             return {
                 "The temperature threshold (in °C) for resetting to stock clocks when Thermal Throttle is enabled.",

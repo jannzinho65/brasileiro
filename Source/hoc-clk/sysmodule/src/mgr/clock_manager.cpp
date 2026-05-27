@@ -293,20 +293,6 @@ namespace clockManager {
 
     bool HandleSafetyFeatures()
     {
-        if (config::GetConfigValue(HocClkConfigValue_HandheldTDP) && (gContext.profile != HocClkProfile_Docked)) {
-            if (board::GetConsoleType() == HocClkConsoleType_Hoag) {
-                if (board::GetPowerMw(HocClkPowerSensor_Avg) < -(int)config::GetConfigValue(HocClkConfigValue_LiteTDPLimit)) {
-                    ResetToStockClocks();
-                    return true;
-                }
-            } else {
-                if (board::GetPowerMw(HocClkPowerSensor_Avg) < -(int)config::GetConfigValue(HocClkConfigValue_HandheldTDPLimit)) {
-                    ResetToStockClocks();
-                    return true;
-                }
-            }
-        }
-
         if (((tmp451TempSoc() / 1000) > (int)config::GetConfigValue(HocClkConfigValue_ThermalThrottleThreshold)) && config::GetConfigValue(HocClkConfigValue_ThermalThrottle)) {
             ResetToStockClocks();
             return true;

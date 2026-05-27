@@ -46,11 +46,6 @@ typedef enum {
     HocClkConfigValue_ThermalThrottle,
     HocClkConfigValue_ThermalThrottleThreshold,
 
-    HocClkConfigValue_HandheldTDP,
-    HocClkConfigValue_HandheldTDPLimit,
-
-    HocClkConfigValue_LiteTDPLimit,
-
     HocClkConfigValue_BatteryChargeCurrent,
 
     HocClkConfigValue_OverwriteRefreshRate,
@@ -234,15 +229,6 @@ static inline const char* hocclkFormatConfigValue(HocClkConfigValue val, bool pr
 
         case HocClkConfigValue_ThermalThrottleThreshold:
             return pretty ? "Thermal Throttle Threshold" : "thermal_throttle_threshold";
-
-        case HocClkConfigValue_HandheldTDP:
-            return pretty ? "Handheld TDP" : "handheld_tdp";
-
-        case HocClkConfigValue_HandheldTDPLimit:
-            return pretty ? "Handheld TDP Limit" : "tdp_limit";
-
-        case HocClkConfigValue_LiteTDPLimit:
-            return pretty ? "Handheld TDP Limit" : "tdp_limit_l";
 
         case HocClkConfigValue_BatteryChargeCurrent:
             return pretty ? "Battery Charge Current" : "bat_charge_current";
@@ -504,16 +490,11 @@ static inline uint64_t hocclkDefaultConfigValue(HocClkConfigValue val)
             return 1963ULL;
 
         case HocClkConfigValue_ThermalThrottle:
-        case HocClkConfigValue_HandheldTDP:
         case HocClkConfigValue_IsFirstLoad:
         case HocClkConfigValue_DVFSMode:
             return 1ULL;
         case HocClkConfigValue_ThermalThrottleThreshold:
             return 70ULL;
-        case HocClkConfigValue_HandheldTDPLimit:
-            return 9600ULL; // 8600mW will trigger on erista stock, so raise it a bit
-        case HocClkConfigValue_LiteTDPLimit:
-            return 6400ULL; // 0.5C
         case HocClkConfigValue_CpuGovernorMinimumFreq:
             return 612000000ULL; // 612MHz
         case HocClkConfigValue_MaxDisplayClockH:
@@ -534,8 +515,6 @@ static inline uint64_t hocclkValidConfigValue(HocClkConfigValue val, uint64_t in
         case HocClkConfigValue_EristaMaxCpuClock:
         case HocClkConfigValue_MarikoMaxCpuClock:
         case HocClkConfigValue_ThermalThrottleThreshold:
-        case HocClkConfigValue_HandheldTDPLimit:
-        case HocClkConfigValue_LiteTDPLimit:
         case HocClkConfigValue_PollingIntervalMs:
         case HocClkConfigValue_MaxDisplayClockH:
             return input > 0;
@@ -547,7 +526,6 @@ static inline uint64_t hocclkValidConfigValue(HocClkConfigValue val, uint64_t in
         case HocClkConfigValue_UncappedClocks:
         case HocClkConfigValue_OverwriteBoostMode:
         case HocClkConfigValue_ThermalThrottle:
-        case HocClkConfigValue_HandheldTDP:
         case HocClkConfigValue_OverwriteRefreshRate:
         case HocClkConfigValue_IsFirstLoad:
         case HocClkConfigValue_EnableExperimentalSettings:

@@ -55,7 +55,8 @@ namespace config {
     bool SetConfigValues(HocClkConfigValueList* configValues, bool immediate);
     bool ResetConfigValue(HocClkConfigValue kval);
     bool SetConfigValue(HocClkConfigValue kval, std::uint64_t value, bool immediate = true);
-
+    void DeleteKey(const char* section, const char* key);
+    
     extern uint64_t configValues[HocClkConfigValue_EnumMax];
 
 }

@@ -480,4 +480,8 @@ namespace config {
         return true;
     }
 
+    void DeleteKey(const char* section, const char* key) {
+        std::scoped_lock lock{gConfigMutex};
+        ini_puts(section, key, NULL, gPath.c_str());
+    }
 }

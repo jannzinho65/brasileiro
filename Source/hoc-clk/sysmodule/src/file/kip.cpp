@@ -311,11 +311,17 @@ namespace kip {
         config::GetConfigValues(&configValues);
         u32 previousVersion = configValues.values[KipConfigValue_KipVersion];
         if(previousVersion < 240 && version >= 240) {
-            // <2.4.0 -> 2.4.0 migration: add marikoGpuBootVolt with default value of 800mV
+            // <2.4.0 -> 2.4.0 migration
+
+            // add marikoGpuBootVolt with default value of 800mV
             configValues.values[KipConfigValue_marikoGpuBootVolt] = 800;
+
+            // delete handheld TDP config entries
+            config::DeleteKey(CONFIG_VAL_SECTION, "handheld_tdp");
+            config::DeleteKey(CONFIG_VAL_SECTION, "tdp_limit");
+            config::DeleteKey(CONFIG_VAL_SECTION, "tdp_limit_l");
         }
         config::SetConfigValues(&configValues, true);
-        // This function cannot do anything at the moment. The capabilities will be expanded in the next release
     }
 }
 
