@@ -50,8 +50,17 @@ namespace board {
             u32 tune1_high;
         };
 
-        EristaCpuUvEntry eristaCpuUvTable[6] = {
-            {0xFFEAD0FF, 0x0},
+        EristaCpuUvEntry eristaCpuUvTableLowBracket[6] = { // <2118 CPU speedo
+            {0xFFEAD0FF, 0x25501d0},
+            {0xffff, 0x27007ff},
+            {0xefff, 0x27407ff},
+            {0xdfff, 0x27807ff},
+            {0xdfdf, 0x27a07ff},
+            {0xcfdf, 0x37007ff},
+        };
+
+        EristaCpuUvEntry eristaCpuUvTableHighBracket[6] = {
+            {0xFFEAD0FF, 0x20091d9},
             {0xffff, 0x27007ff},
             {0xefff, 0x27407ff},
             {0xdfff, 0x27807ff},
@@ -108,6 +117,7 @@ namespace board {
     void SetDfllTunings(u32 levelLow, u32 levelHigh, u32 tbreakPoint) {
         u32* tune0_ptr = reinterpret_cast<u32 *>(cldvfs + CL_DVFS_TUNE0_0);
         u32* tune1_ptr = reinterpret_cast<u32 *>(cldvfs + CL_DVFS_TUNE1_0);
+        
         if (GetSocType() == HocClkSocType_Mariko) {
             if (GetHz(HocClkModule_CPU) < tbreakPoint && (levelLow || levelHigh)) {
                 if (levelLow) {
@@ -136,16 +146,8 @@ namespace board {
                 return;
             }
         } else {
-            // if (GetHz(HocClkModule_CPU) < tbreakPoint || (!levelLow)) { // account for tbreak
-            //     *tune0_ptr = cachedTune.tune0Low; // I think each erista has a different tune0/tune1?
-            //     *tune1_ptr = cachedTune.tune1Low;
-            //     return;
-            // } else {
-            //     if (levelLow) {
-                     *tune0_ptr = eristaCpuUvTable[levelLow].tune0;
-                     *tune1_ptr = eristaCpuUvTable[levelLow].tune1;
-            //     } else {
-            // }
+            *tune0_ptr = fuseData.cpuSpeedo > 2118 ? eristaCpuUvTableHighBracket[levelLow].tune0 : eristaCpuUvTableLowBracket[levelLow].tune0;
+            *tune1_ptr = fuseData.cpuSpeedo > 2118 ? eristaCpuUvTableHighBracket[levelLow].tune1 : eristaCpuUvTableLowBracket[levelLow].tune1;
         }
     }
 
