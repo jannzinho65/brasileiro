@@ -2049,6 +2049,10 @@ protected:
                 NamedValue("2703 MHz", 2703000),
             };
             std::vector<NamedValue> ClkOptionsRamOc = {
+                NamedValue("1122 MHz", 1122000),
+                NamedValue("1224 MHz", 1224000),
+                NamedValue("1326 MHz", 1326000),
+                NamedValue("1428 MHz", 1428000),
                 NamedValue("1581 MHz", 1581000),
                 NamedValue("1683 MHz", 1683000),
                 NamedValue("1785 MHz", 1785000),
