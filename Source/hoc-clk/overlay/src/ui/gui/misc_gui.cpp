@@ -2165,7 +2165,7 @@ protected:
             addConfigButton(
                 KipConfigValue_eristaCpuVmin,
                 "CPU VMIN",
-                ValueRange(700, 900, 25, "mV", 1),
+                ValueRange(750, 900, 25, "mV", 1),
                 "CPU VMIN",
                 &thresholdsDisabled,
                 {},
