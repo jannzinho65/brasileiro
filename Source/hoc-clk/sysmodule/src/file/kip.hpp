@@ -128,54 +128,59 @@ namespace kip {
         return false;
     }
 
+    static long cachedCustOffset = -1;
+
+    static inline long cust_get_offset(FILE* f) {
+        if (cachedCustOffset >= 0) return cachedCustOffset;
+        long off;
+        if (!cust_find_offset(f, &off)) return -1;
+        cachedCustOffset = off;
+        return off;
+    }
+
+    static inline bool cust_read_table_f(FILE* f, CustomizeTable* out) {
+        long off = cust_get_offset(f);
+        if (off < 0) return false;
+
+        fseek(f, 0, SEEK_END);
+        if (off + (long)sizeof(CustomizeTable) > ftell(f)) return false;
+
+        fseek(f, off, SEEK_SET);
+        if (fread(out, 1, sizeof(CustomizeTable), f) != sizeof(CustomizeTable)) return false;
+
+        if (memcmp(out->cust, CUST_MAGIC, CUST_MAGIC_LEN) != 0) {
+            cachedCustOffset = -1;
+            return false;
+        }
+        return true;
+    }
+
+    static inline bool cust_write_table_f(FILE* f, const CustomizeTable* in) {
+        long off = cust_get_offset(f);
+        if (off < 0) return false;
+
+        fseek(f, 0, SEEK_END);
+        if (off + (long)sizeof(CustomizeTable) > ftell(f)) return false;
+
+        fseek(f, off, SEEK_SET);
+        bool ok = fwrite(in, 1, sizeof(CustomizeTable), f) == sizeof(CustomizeTable);
+        fflush(f);
+        return ok;
+    }
+
     static inline bool cust_read_table(const char* path, CustomizeTable* out) {
         FILE* f = fopen(path, "rb");
         if (!f) return false;
-
-        long off;
-        if (!cust_find_offset(f, &off)) {
-            fclose(f);
-            return false;
-        }
-
-        fseek(f, 0, SEEK_END);
-        long size = ftell(f);
-
-        if (off + (long)sizeof(CustomizeTable) > size) {
-            fclose(f);
-            return false;
-        }
-
-        fseek(f, off, SEEK_SET);
-        bool ok = fread(out, 1, sizeof(CustomizeTable), f) == sizeof(CustomizeTable);
+        bool ok = cust_read_table_f(f, out);
         fclose(f);
-
-        return ok && memcmp(out->cust, CUST_MAGIC, CUST_MAGIC_LEN) == 0;
+        return ok;
     }
 
     static inline bool cust_write_table(const char* path, const CustomizeTable* in) {
         FILE* f = fopen(path, "r+b");
         if (!f) return false;
-
-        long off;
-        if (!cust_find_offset(f, &off)) {
-            fclose(f);
-            return false;
-        }
-
-        fseek(f, 0, SEEK_END);
-        long size = ftell(f);
-
-        if (off + (long)sizeof(CustomizeTable) > size) {
-            fclose(f);
-            return false;
-        }
-
-        fseek(f, off, SEEK_SET);
-        bool ok = fwrite(in, 1, sizeof(CustomizeTable), f) == sizeof(CustomizeTable);
-        fflush(f);
+        bool ok = cust_write_table_f(f, in);
         fclose(f);
-
         return ok;
     }
 

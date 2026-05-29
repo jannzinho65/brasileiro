@@ -34,19 +34,17 @@ namespace kip {
         //     }
         // }
         CustomizeTable table;
-        FILE* fp;
-        fp = fopen("sdmc:/atmosphere/kips/hoc.kip", "r");
+        FILE* fp = fopen("sdmc:/atmosphere/kips/hoc.kip", "r+b");
 
         if (fp == NULL) {
             notification::writeNotification("Horizon OC\nKip opening failed");
             kipAvailable = false;
             return;
-        } else {
-            kipAvailable = true;
-            fclose(fp);
         }
+        kipAvailable = true;
 
-        if (!cust_read_and_cache("sdmc:/atmosphere/kips/hoc.kip", &table)) {
+        if (!cust_read_table_f(fp, &table)) {
+            fclose(fp);
             fileUtils::LogLine("[kip] Failed to read KIP file");
             notification::writeNotification("Horizon OC\nKip read failed");
             return;
@@ -55,11 +53,13 @@ namespace kip {
         u32 custRev    = cust_get_cust_rev(&table);
         u32 kipVersion = cust_get_kip_version(&table);
         if (custRev < CUST_REV || kipVersion < KIP_VERSION) {
+            fclose(fp);
             notification::writeNotification("Horizon OC\nOutdated kip detected!\nPlease update Horizon OC");
             fileUtils::LogLine("Cust revision: %u", custRev);
             fileUtils::LogLine("Kip version: %u", kipVersion);
             return;
         } else if (custRev > CUST_REV || kipVersion > KIP_VERSION) {
+            fclose(fp);
             notification::writeNotification("Horizon OC\nOutdated sysmodule detected!\nPlease update Horizon OC");
             fileUtils::LogLine("Cust revision: %u", custRev);
             fileUtils::LogLine("Kip version: %u", kipVersion);
@@ -138,10 +138,13 @@ namespace kip {
         CUST_WRITE_FIELD_BATCH(&table, t6_tRTW_fine_tune, config::GetConfigValue(KipConfigValue_t6_tRTW_fine_tune));
         CUST_WRITE_FIELD_BATCH(&table, t7_tWTR_fine_tune, config::GetConfigValue(KipConfigValue_t7_tWTR_fine_tune));
 
-        if (!cust_write_table("sdmc:/atmosphere/kips/hoc.kip", &table)) {
+        if (!cust_write_table_f(fp, &table)) {
+            fclose(fp);
             fileUtils::LogLine("[kip] Failed to write KIP file");
             notification::writeNotification("Horizon OC\nKip write failed");
+            return;
         }
+        fclose(fp);
 
         HocClkConfigValueList configValues;
         config::GetConfigValues(&configValues);
@@ -163,27 +166,26 @@ namespace kip {
 
     void GetKipData()
     {
-        FILE* fp;
-        fp = fopen("sdmc:/atmosphere/kips/hoc.kip", "r");
+        FILE* fp = fopen("sdmc:/atmosphere/kips/hoc.kip", "rb");
 
         if (fp == NULL) {
             notification::writeNotification("Horizon OC\nKip opening failed");
             kipAvailable = false;
             return;
-        } else {
-            kipAvailable = true;
-            fclose(fp);
         }
+        kipAvailable = true;
 
         HocClkConfigValueList configValues;
         config::GetConfigValues(&configValues);
 
         CustomizeTable table;
-        if (!cust_read_and_cache("sdmc:/atmosphere/kips/hoc.kip", &table)) {
+        if (!cust_read_table_f(fp, &table)) {
+            fclose(fp);
             fileUtils::LogLine("[kip] Failed to read KIP file for GetKipData");
             notification::writeNotification("Horizon OC\nKip read failed");
             return;
         }
+        fclose(fp);
 
         // if(cust_get_cust_rev(&table) != CUST_REV) {
         //     notification::writeNotification("Horizon OC\nKip version mismatch\nPlease reinstall Horizon OC");
