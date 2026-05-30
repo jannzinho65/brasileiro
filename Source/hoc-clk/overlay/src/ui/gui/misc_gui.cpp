@@ -2247,9 +2247,9 @@ protected:
         this->listElement->addItem(new CompactCategoryHeader("GPU Settings"));
 
         std::vector<NamedValue> gpuUvConfM = {
-            NamedValue("No Undervolt", 0),
+            NamedValue("No Undervolt", 0, "HOS Default"),
             NamedValue("SLT Table", 1),
-            NamedValue("HiOPT Table", 2),
+            NamedValue("HiOPT Table", 2, "HOC Default"),
             NamedValue("HiOPT - 15mV", 3),
             NamedValue("High UV Table", 4),
         };

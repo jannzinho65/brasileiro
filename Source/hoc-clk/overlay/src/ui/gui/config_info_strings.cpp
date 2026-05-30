@@ -467,9 +467,9 @@ std::vector<std::string> ConfigInfoStrings(HocClkConfigValue val, bool isMariko,
             return {
                 "GPU undervolt level",
                 "Options:",
-                " - No Undervolt: No Undervolt...",
+                " - No Undervolt: No Undervolt, HOS default",
                 " - SLT Table: NVIDIA custom SLT Table",
-                " - HiOPT: L4T Custom HiOPT table",
+                " - HiOPT: L4T Custom HiOPT table, HOC Default",
                 " - HiOPT - 15mV: L4T Custom HiOPT table with a 15mV offset",
                 " - High UV: The highest undervolt table",
                 "Default: No Undervolt"
