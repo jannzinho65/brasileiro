@@ -57,15 +57,6 @@ BaseMenuGui::~BaseMenuGui() {
 // Fast preDraw - just renders pre-computed strings
 void BaseMenuGui::preDraw(tsl::gfx::Renderer* renderer) {
     BaseGui::preDraw(renderer);
-    if (!this->context) [[unlikely]] {
-        this->context = new HocClkContext;
-    }
-
-    Result rc = hocclkIpcGetCurrentContext(this->context);
-    if (R_FAILED(rc)) [[unlikely]] {
-        FatalGui::openWithResultCode("hocclkIpcGetCurrentContext", rc);
-        return;
-    }
 
     // All constants pre-calculated and cached
     const char* labels[] = {
