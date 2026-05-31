@@ -72,23 +72,26 @@ jobs:
       - name: Cache ccache
         uses: actions/cache@v5.0.5
         with:
-          path: /github/home/.cache/ccache
+          path: $HOME/.cache/ccache
           key: ccache-${{ runner.os }}-devkitpro-ams-${{ hashFiles('ams_ver.txt') }}
           restore-keys: |
             ccache-${{ runner.os }}-devkitpro-
 
       - name: Configure ccache
         run: |
-          export CCACHE_DIR="/github/home/.cache/ccache"
+          export CCACHE_DIR="$HOME/.cache/ccache"
           export CCACHE_BASEDIR="$GITHUB_WORKSPACE"
           export CCACHE_COMPILERCHECK=content
           export CCACHE_NOHASHDIR=true
-          echo "CCACHE_DIR=/github/home/.cache/ccache" >> $GITHUB_ENV
+          echo "CCACHE_DIR=/github/home/.cache/ccache"    >> $GITHUB_ENV
+          echo "CCACHE_BASEDIR=$GITHUB_WORKSPACE"         >> $GITHUB_ENV
+          echo "CCACHE_COMPILERCHECK=content"             >> $GITHUB_ENV
+          echo "CCACHE_NOHASHDIR=true"                    >> $GITHUB_ENV
           ccache --set-config=max_size=10G
           ccache --set-config=compiler_check=content
           ccache --set-config=hash_dir=false
-          ls -lah /github/home/.cache/ccache
           ccache -s
+          ls -lah $HOME/.cache/ccache
 
       - name: Build Libnx
         shell: bash
@@ -168,7 +171,8 @@ jobs:
           cp hoc.kip ../../../dist/atmosphere/kips/hoc.kip
           
       - name: ccache stat
-        run: ccache --show-stats
+        run: |
+             ccache --show-stats
              ccache -s
              ccache --show-config
 
