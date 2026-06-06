@@ -682,7 +682,7 @@ class ExperimentalSettingsSubMenuGui : public MiscGui {
         tsl::elm::CustomDrawer *chargeWarningText = new tsl::elm::CustomDrawer([](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
             renderer->drawString("\uE150 Overriding the charge current", false, x + 20, y + 30, 18, tsl::style::color::ColorText);
             renderer->drawString("can be dangerous and may cause", false, x + 20, y + 50, 18, tsl::style::color::ColorText);
-            renderer->drawString("damage to your battery or orcodeus!", false, x + 20, y + 70, 18, tsl::style::color::ColorText);
+            renderer->drawString("damage to your battery or charger!", false, x + 20, y + 70, 18, tsl::style::color::ColorText);
         });
         chargeWarningText->setBoundaries(0, 0, tsl::cfg::FramebufferWidth, 90);
         this->listElement->addItem(chargeWarningText);
@@ -714,8 +714,8 @@ class ExperimentalSettingsSubMenuGui : public MiscGui {
         tsl::elm::CustomDrawer *inputLimitWarningText = new tsl::elm::CustomDrawer([](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
             renderer->drawString("\uE150 Overriding the input current", false, x + 20, y + 30, 18, tsl::style::color::ColorText);
             renderer->drawString("limit increases power draw from", false, x + 20, y + 50, 18, tsl::style::color::ColorText);
-            renderer->drawString("your charger. Use only with the", false, x + 20, y + 70, 18, tsl::style::color::ColorText);
-            renderer->drawString("official Nintendo charger!", false, x + 20, y + 90, 18, tsl::style::color::ColorText);
+            renderer->drawString("your charger. And board stress ", false, x + 20, y + 70, 18, tsl::style::color::ColorText);
+            renderer->drawString("use 1500mA max.", false, x + 20, y + 90, 18, tsl::style::color::ColorText);
         });
         inputLimitWarningText->setBoundaries(0, 0, tsl::cfg::FramebufferWidth, 110);
         this->listElement->addItem(inputLimitWarningText);
@@ -733,7 +733,7 @@ class ExperimentalSettingsSubMenuGui : public MiscGui {
             NamedValue("3000mA", 3000),
         };
 
-        ValueThresholds inputLimitThresholds(2000, 2001);
+        ValueThresholds inputLimitThresholds(1500, 1501);
 
         addConfigButton(HocClkConfigValue_InputCurrentLimit, "Input Current Limit Override", ValueRange(0, 0, 1, "", 0),
                         "Input Current Limit Override", &inputLimitThresholds, {}, inputCurrentLimits, false);
@@ -1075,7 +1075,7 @@ class RamSubmenuGui : public MiscGui {
         });
         timingsSubmenu->setValue(R_ARROW);
         this->listElement->addItem(timingsSubmenu);
-    
+
         if (IsMariko()) {
             tsl::elm::ListItem *socVoltageTable = new tsl::elm::ListItem("SOC Voltage Table");
             socVoltageTable->setClickListener([](u64 keys) {
