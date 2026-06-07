@@ -257,7 +257,7 @@ namespace ams::ldr::hoc::pcv::erista {
         WRITE_PARAM_ALL_REG(table, emc_rw2pden, tWTPDEN);
 
         /* Accept imperfection or prepare for suffering. */
-        #if defined(AMS_BUILD_FOR_AUDITING) || defined(AMS_BUILD_FOR_DEBUGGING)
+        // #if defined(AMS_BUILD_FOR_AUDITING) || defined(AMS_BUILD_FOR_DEBUGGING)
         // WRITE_PARAM_ALL_REG(table, emc_einput, einput);
         // WRITE_PARAM_ALL_REG(table, emc_einput_duration, einput_duration);
         WRITE_PARAM_ALL_REG(table, emc_obdly, obdly);
@@ -282,7 +282,7 @@ namespace ams::ldr::hoc::pcv::erista {
         // WRITE_PARAM_ALL_REG(table, emc_tr_rdv, rdv);
         table->emc_mrw2 = (table->emc_mrw2 & ~0xFFu) | static_cast<u32>(mrw2);
         // table->dram_timings.rl = RL;
-        #endif
+        // #endif
 
         constexpr double MC_ARB_DIV = 4.0;
         constexpr u32 MC_ARB_SFA    = 2;

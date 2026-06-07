@@ -90,6 +90,13 @@ std::vector<std::string> ConfigInfoStrings(HocClkConfigValue val, bool isMariko,
                 isHoag ? "Default: 1664 mA" : "2048 mA"
             };
 
+
+        case HocClkConfigValue_InputCurrentLimit:
+            return {
+                "Overrides the maximum input current from the charger.",
+                isHoag ? "Default: 900 mA" : "1200 mA" 
+            };
+
         case HocClkConfigValue_AulaDisplayColorPreset:
             return {
                 "Current display color preset. Default is Basic",
@@ -472,7 +479,7 @@ std::vector<std::string> ConfigInfoStrings(HocClkConfigValue val, bool isMariko,
                 " - HiOPT: L4T Custom HiOPT table, HOC Default",
                 " - HiOPT - 15mV: L4T Custom HiOPT table with a 15mV offset",
                 " - High UV: The highest undervolt table",
-                "Default: No Undervolt"
+                "Default: HiOPT"
             };
 
         case KipConfigValue_marikoGpuVmin:
