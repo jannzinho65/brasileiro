@@ -18,7 +18,7 @@ ICON		:=	icon.jpg
 INCLUDES	:=	source source/furmark source/memtester ../hoc-clk/common/include
 
 APP_TITLE	:=	Benchmark Toolbox
-APP_AUTHOR	:=	Horizon-OC, KazushiMe, Souldbminer
+APP_AUTHOR	:=	Horizon-OC
 APP_VERSION	:=	2.0.0
 
 ROMFS			:=	resources
