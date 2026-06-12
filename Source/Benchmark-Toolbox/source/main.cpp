@@ -587,10 +587,16 @@ class MemtesterTab : public brls::Box {
         rowA = makeRow(this, "Loops");
         rowB = makeRow(this, "Mismatches");
         rowC = makeRow(this, "Detail");
+
+        updateBar();
     }
 
     void setProgress(float f) {
         barFill->setWidthPercentage(f * 100.0f);
+    }
+
+    void updateBar() {
+        bar->setVisibility(isGpu() ? brls::Visibility::GONE : brls::Visibility::VISIBLE);
     }
 
     ~MemtesterTab() override {
@@ -612,7 +618,6 @@ class MemtesterTab : public brls::Box {
                 rowC->setText(fstru("%llu MB tested", (unsigned long long)s.size_mb));
                 statusL->setText(s.error ? std::string("Error: ") + s.status : std::string(s.status));
             }
-            setProgress(0.0f);
             syncToggle(s.running != 0);
         } else {
             mt_cpu_status_t s;
@@ -659,6 +664,7 @@ class MemtesterTab : public brls::Box {
             return;
         mode = (mode + dir + 4) % 4;
         modeVal->setText(modeName(mode));
+        updateBar();
     }
     void onToggle() {
         if (anyRunning())
