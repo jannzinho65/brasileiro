@@ -79,7 +79,7 @@ namespace ams::ldr::hoc {
 
         Result SearchAndApply(Pointer *ptr) {
             bool searchOk = false;
-            if (pattern_search_fn), {
+            if (pattern_search_fn) {
                 if (pattern_search_fn(ptr)) {
                     searchOk = true;
                 }
