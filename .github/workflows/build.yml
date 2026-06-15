@@ -72,26 +72,25 @@ jobs:
       - name: Cache ccache
         uses: actions/cache@v5.0.5
         with:
-          path: $HOME/.cache/ccache
+          path: .ccache
           key: ccache-${{ runner.os }}-devkitpro-ams-${{ hashFiles('ams_ver.txt') }}
           restore-keys: |
             ccache-${{ runner.os }}-devkitpro-
 
       - name: Configure ccache
         run: |
-          export CCACHE_DIR="$HOME/.cache/ccache"
-          export CCACHE_BASEDIR="$GITHUB_WORKSPACE"
+          export CCACHE_DIR="$GITHUB_WORKSPACE/.ccache"
           export CCACHE_COMPILERCHECK=content
           export CCACHE_NOHASHDIR=true
-          echo "CCACHE_DIR=/github/home/.cache/ccache"    >> $GITHUB_ENV
-          echo "CCACHE_BASEDIR=$GITHUB_WORKSPACE"         >> $GITHUB_ENV
-          echo "CCACHE_COMPILERCHECK=content"             >> $GITHUB_ENV
-          echo "CCACHE_NOHASHDIR=true"                    >> $GITHUB_ENV
+          echo "CCACHE_DIR=$GITHUB_WORKSPACE/.ccache" >> $GITHUB_ENV
+          echo "CCACHE_BASEDIR=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+          echo "CCACHE_COMPILERCHECK=content" >> $GITHUB_ENV
+          echo "CCACHE_NOHASHDIR=true" >> $GITHUB_ENV
           ccache --set-config=max_size=10G
           ccache --set-config=compiler_check=content
           ccache --set-config=hash_dir=false
           ccache -s
-          ls -lah $HOME/.cache/ccache
+          ls -lah "$GITHUB_WORKSPACE/.ccache"
 
       - name: Build Libnx
         shell: bash
