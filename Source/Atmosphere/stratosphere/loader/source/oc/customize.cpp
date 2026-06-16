@@ -120,9 +120,8 @@ volatile CustomizeTable C = {
 .eristaGpuVmin = 810,
 
 .marikoGpuUV = 2,
-/* Vmin past 795mV won't work due boot voltage being 800mV (can be adjusted though). */
+/* Vmin past 795mV won't work due boot voltage being 800mV. */
 .marikoGpuVmin = 610,
-.marikoGpuBootVolt = 800, /* Used during boot and when temp is <20°C */
 .marikoGpuVmax = 800,
 
 .commonGpuVoltOffset = 0,

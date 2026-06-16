@@ -669,9 +669,6 @@ class ExperimentalSettingsSubMenuGui : public MiscGui {
         addConfigButton(HocClkConfigValue_GPUSchedulingMethod, "GPU Scheduling Override Method", ValueRange(0, 0, 1, "", 0),
                         "GPU Scheduling Override Method", &thresholdsDisabled, {}, gpuSchedMethodValues, false);
 
-        addConfigButton(KipConfigValue_marikoGpuBootVolt, "GPU Boot Volt", ValueRange(700, 800, 5, "mV", 1), "GPU Boot Voltage", &thresholdsDisabled,
-                        {}, {}, false, true);
-
         std::vector<NamedValue> ramRFMeasurementMethods = {
             NamedValue("PLL", MemoryFrequencyMeasurementMode_PLL),
             NamedValue("Actmon", MemoryFrequencyMeasurementMode_Actmon),

@@ -122,7 +122,6 @@ struct CustomizeTable {
 
     u32 marikoGpuUV;
     u32 marikoGpuVmin;
-    u32 marikoGpuBootVolt;
     u32 marikoGpuVmax;
 
     s32 commonGpuVoltOffset;
