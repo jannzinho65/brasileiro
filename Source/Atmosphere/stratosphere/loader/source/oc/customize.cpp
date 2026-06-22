@@ -61,7 +61,7 @@ volatile CustomizeTable C = {
 
 /* At 1333WL, for some reason (incorrect ram timing config in mtc table?), tRP causes crashes at high reductions - 2 seems to be the most common limit. */
 /* This is a lazy workaround until I find the issue... */
-.t2_tRP_cap = 2,
+.t2_tRP_cap = 1,
 
 /* Frequency where non low timings gets used. */
 .timingEmcTbreak = DISABLED,
